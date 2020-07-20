@@ -18,7 +18,10 @@
                 <a href="{% url 'login' %}">Login</a>
             </p>
         {% endif %}
-		<link rel="stylesheet" href="{% static 'styles.css' %}">
+		<link rel="stylesheet" href="{% static 'tracker/css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'tracker/css/style.css' %}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="{% static 'tracker/js/script.js' %}"></script>
 	</head>
     <body>
         {% block content %}

@@ -4,12 +4,14 @@ from django.contrib.auth import authenticate
 
 from user_auth.models import User
 
+
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=60, help_text='Required')
 
     class Meta:
         model = User
         fields = ('email', 'username', 'password1', 'password2')
+
 
 class UserAuthenticationForm(forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)

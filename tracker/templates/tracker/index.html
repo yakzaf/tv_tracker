@@ -1,0 +1,41 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="row">
+            <h1 class="text-center">TV Tracker</h1>
+            <div class="content">
+                <br/>
+                <form method="GET" action="{% url 'search_results' %}" >
+                    <div class="input-group search-field">
+                        {{ search_form }}
+                        <div class="input-group-btn">
+                            <button class="btn btn-success" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#	<head>#}
+{#		<meta charset="UTF-8">#}
+{#		<meta name="viewport" content="width=device-width, initial-scale=1">#}
+{#        {% if request.user.is_authenticated %}#}
+{#            <p>Hello, {{ request.user.username }} | <a href="{% url 'logout' %}">Logout</a></p>#}
+{#        {% else %}#}
+{#            <p><a href="{% url 'register' %}">Register | <a href="{% url 'login' %}">Login</a></a></p>#}
+{#        {% endif %}#}
+{#		<link rel="stylesheet" href="{% static 'styles.css' %}">#}
+{#	</head>#}
+{#    <body>#}
+{#        <h1>Index page</h1>#}
+{#    </body>#}
+{#</html>#}

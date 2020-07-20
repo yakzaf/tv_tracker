@@ -1,0 +1,35 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+<!-- BEGIN TABLE RESULT -->
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <tbody>
+            {% for result in results %}
+                <tr>
+                    <td class="number text-center">{{ forloop.counter }}</td>
+                    <td class="image"><img src="{{ result.picture_url }}" alt="" style="width:50px;height:50px"></td>
+                    <td class="title"><strong>{{ result.show_name }}</strong><br>Title test</td>
+                    <td class="service text-right">{{ result.service }}</td>
+                    {% if request.user.is_authenticated %}
+                        <form method="POST" class="add-remove-form" id="add_remove_form-{{ forloop.counter }}"
+                              action="{% url 'change_show_list' pk=result.show_id %}"> {% csrf_token %}
+                            {% if result.added %}
+                                <td><button name="alter_show" class="btn-add-remove btn btn-sm btn-danger" type="submit"
+                                            value="remove" id="add_remove_btn-{{ forloop.counter }}">Remove</button></td>
+
+                            {% else %}
+                                <td><button name="alter_show" class="btn-add-remove btn btn-sm btn-success" type="submit"
+                                            value="add" id="add_remove_btn-{{ forloop.counter }}">Add</button></td>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- END TABLE RESULT -->
+
+{% endblock %}
