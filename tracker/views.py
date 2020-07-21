@@ -19,7 +19,7 @@ def index(request):
 
 
 def search_results(request):
-    template = 'tracker/search_results.html'
+    template = 'tracker/show_list.html'
     term = request.GET.get('q')
 
     vector = SearchVector('show_name')
@@ -40,10 +40,10 @@ def search_results(request):
             try:
                 added = bool(show.users.get(id=request.user.id))
             except User.DoesNotExist:
-                print('exception')
-            print(added)
-            results.append({"added": added, "show_id": show.show_id, "show_name": show.show_name, "picture_url": show.picture_url,
-                            "service": show.service})
+                pass
+            results.append(
+                {"added": added, "show_id": show.show_id, "show_name": show.show_name, "picture_url": show.picture_url,
+                 "service": show.service})
 
     context = {
         'results': results,
@@ -52,34 +52,27 @@ def search_results(request):
 
 
 def change_show_list(request, pk):
-    print(pk)
     term = request.POST.get('alter_show_list')
-    print(term)
     show = Show.objects.get(pk=pk)
     if term == 'add':
-        print('bruh')
         request.user.shows.add(show)
     elif term == 'remove':
-        print('no bruh')
         request.user.shows.remove(show)
 
     return HttpResponse()
-# def search_results(request):
 
 
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserCreationForm(request.POST)
-#
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data['username']
-#             password = form.cleaned_data['password1']
-#             user = authenticate(username=username, password=password)
-#             login(request, user)
-#             return redirect('index')
-#     else:
-#         form = UserCreationForm()
-#
-#     context = {'form': form}
-#     return render(request, 'account/register.html', context)
+def watchlist(request):
+    template = 'tracker/show_list.html'
+    user_watchlist = Show.objects.filter(users__in=[request.user.id]).order_by('-user_shows__date_added')
+    results = []
+    for show in user_watchlist:
+        results.append(
+            {"added": True, "show_id": show.show_id, "show_name": show.show_name, "picture_url": show.picture_url,
+             "service": show.service})
+    context = {
+        'results': results
+    }
+
+
+    return render(request, template, context)
