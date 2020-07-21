@@ -20,3 +20,6 @@ class UserShowList(models.Model):
     user = models.ForeignKey('user_auth.User', related_name='user_shows', on_delete=models.SET_NULL, null=True)
     show = models.ForeignKey('Show', related_name='user_shows', on_delete=models.SET_NULL, null=True, blank=True)
     date_added = models.DateTimeField(verbose_name='date added', auto_now_add=True)
+
+    class Meta:
+        ordering = ('date_added', )
