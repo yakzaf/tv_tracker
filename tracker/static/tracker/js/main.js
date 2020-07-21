@@ -1,15 +1,13 @@
 $(document).on('click', '.btn-add-remove', function(e) {
     let value = $(this).val();
     let formAction = $(this.form).attr('action');
-    console.log(formAction);
-    console.log(value);
     $.ajax({
         url: formAction,
         type: "POST",
         data: {
             csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
             alter_show_list: value
-        }
+        },
     });
     if (value === "add") {
         $(this).removeClass("btn-success");

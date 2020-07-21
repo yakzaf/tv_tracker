@@ -11,7 +11,7 @@ td {
   align-items: center;
   justify-content: center;
   margin: auto;
-  height: calc(100vh - 2rem);
+  height: calc(100vh - 5rem);
 }
 
 .content {
@@ -24,6 +24,10 @@ td {
   max-width: 600px;
 }
 
-p.nav {
-  height: 2rem;
+.nav {
+  height: 5rem;
+}
+
+p#temp {
+  margin: 0;
 }
