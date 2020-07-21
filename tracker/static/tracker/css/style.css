@@ -11,7 +11,7 @@ td {
   align-items: center;
   justify-content: center;
   margin: auto;
-  height: calc(100vh - 30px);
+  height: calc(100vh - 2rem);
 }
 
 .content {
@@ -22,4 +22,8 @@ td {
 #search {
   margin: auto;
   max-width: 600px;
+}
+
+p.nav {
+  height: 2rem;
 }
