@@ -32,7 +32,6 @@ def search_results(request):
     if not shows.exists():
         shows_lookup = TvShows(term)
         results = shows_lookup.db_save()
-
     else:
         results = []
         for show in shows:
