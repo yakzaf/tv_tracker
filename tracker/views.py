@@ -6,6 +6,7 @@ from tracker.shows_db.show_lookup import TvShows
 from django.db.models import Q
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from tracker.forms import SearchForm
+# import json
 
 
 # Create your views here.
@@ -20,13 +21,15 @@ def index(request):
 
 def search_results(request):
     template = 'tracker/show_list.html'
-    term = request.GET.get('q')
-
+    term = request.GET.get('q').strip()
     vector = SearchVector('show_name')
     query = SearchQuery(term)
     print(query)
     print(vector)
-    shows = Show.objects.annotate(rank=SearchRank(vector, query)).filter(Q(show_name__icontains=term)).order_by('-rank')
+    if not query:
+        shows = Show.objects.annotate(rank=SearchRank(vector, query)).filter(Q(show_name__icontains=term)).order_by('-rank')
+    else:
+        shows = Show.objects.none()
     print(shows)
     print(request.user.username)
     if not shows.exists():
@@ -44,9 +47,10 @@ def search_results(request):
                 {"added": added, "show_id": show.show_id, "show_name": show.show_name, "picture_url": show.picture_url,
                  "service": show.service})
 
-    context = {
-        'results': results,
-    }
+    context = {'results': results}
+    # context = {}
+    # context['results_json'] = json.dumps(results)
+
     return render(request, template, context)
 
 
@@ -72,6 +76,5 @@ def watchlist(request):
     context = {
         'results': results
     }
-
 
     return render(request, template, context)

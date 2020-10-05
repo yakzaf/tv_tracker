@@ -5,17 +5,22 @@ from django.conf import settings
 
 
 def image_save(show_name, pic_url):
-    request = requests.get(pic_url, stream=True)
-    if request.status_code != requests.codes.ok:
+    if pic_url is None:
         return
-    path = settings.MEDIA_ROOT + f'{show_name}.webp'
+    try:
+        request = requests.get(pic_url, stream=True)
+    except requests.HTTPError:
+        return
+    # if request.status_code != requests.codes.ok:
+    #     return
+    path = settings.MEDIA_ROOT + f'{show_name}.png'
     print(path)
     with open(path, 'wb') as f:
         for block in request.iter_content(1024 * 1024 * 10):
             if not block:
                 break
             f.write(block)
-    return f'{show_name}.webp'
+    return f'{show_name}.png'
 
 
 
@@ -36,6 +41,7 @@ class TvShows:
         except requests.exceptions.HTTPError as err:
             raise SystemExit(err)
         response_json = r.json()
+        print(f'length = {len(response_json["results"])}')
         if len(response_json["results"]) == 0:
             return
         results = []
