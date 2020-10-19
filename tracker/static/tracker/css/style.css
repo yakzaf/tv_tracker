@@ -31,3 +31,11 @@ td {
 p#temp {
   margin: 0;
 }
+
+h4#login-title {
+  display: inline-block;
+}
+
+.hide, .hidden {
+  display: none;
+}
