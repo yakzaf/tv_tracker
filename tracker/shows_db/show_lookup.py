@@ -2,6 +2,8 @@ import requests
 from decouple import config
 from tracker.models import Show
 from django.conf import settings
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.db.models import Q
 
 
 def image_save(show_name, pic_url):
@@ -11,8 +13,6 @@ def image_save(show_name, pic_url):
         request = requests.get(pic_url, stream=True)
     except requests.HTTPError:
         return
-    # if request.status_code != requests.codes.ok:
-    #     return
     path = settings.MEDIA_ROOT + f'{show_name}.png'
     print(path)
     with open(path, 'wb') as f:
@@ -21,7 +21,6 @@ def image_save(show_name, pic_url):
                 break
             f.write(block)
     return f'{show_name}.png'
-
 
 
 class TvShows:
@@ -42,12 +41,18 @@ class TvShows:
             raise SystemExit(err)
         response_json = r.json()
         print(f'length = {len(response_json["results"])}')
+
         if len(response_json["results"]) == 0:
             return
         results = []
         item_list = []
         for result in response_json["results"]:
             show_name = result["name"]
+            shows = Show.objects.filter(show_name__exact=show_name)
+            if shows.exists():
+                results.append({"show_id": shows[0].show_id, "show_name": shows[0].show_name,
+                                "picture_url": shows[0].picture_url, "service": shows[0].service})
+                continue
             request_services = result["locations"]
             pic = result["picture"]
             picture_path = f'/media/{image_save(show_name, pic)}'
@@ -55,14 +60,13 @@ class TvShows:
             for s in request_services:
                 services.append(s["display_name"])
 
-            # item = Show(show_name=show_name, picture_url=picture_path, service=services)
-            # item.save()
             item = {"show_name": show_name, "picture_url": picture_path, "service": services}
             item_list.append(Show(**item))
 
-        Show.objects.bulk_create(item_list)
-        results = [{"show_id": item_list[i].show_id, "show_name": item_list[i].show_name,
-                    "picture_url": item_list[i].picture_url, "service": item_list[i].service} for i in
-                   range(len(item_list))]
+        if item_list:
+            Show.objects.bulk_create(item_list)
+            results = [{"show_id": item_list[i].show_id, "show_name": item_list[i].show_name,
+                        "picture_url": item_list[i].picture_url, "service": item_list[i].service} for i in
+                       range(len(item_list))]
 
         return results
