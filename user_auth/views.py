@@ -2,28 +2,31 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from user_auth.forms import RegistrationForm, UserAuthenticationForm
+from user_auth.forms import RegistrationForm
+import json
 
 
 # Create your views here.
 def register_view(request):
     context = {}
 
-    if request.POST:
-        form = RegistrationForm(request.POST)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        form = RegistrationForm(data)
         if form.is_valid():
             form.save()
             email = form.cleaned_data['email']
             raw_password = form.cleaned_data['password1']
             account = authenticate(email=email, password=raw_password)
             login(request, account)
-            return redirect('index')
+            response = HttpResponse(content="registration-success", status=200)
+            return response
         else:
-            context['registration_form'] = form
+            return HttpResponse(404)
     else:
         form = RegistrationForm()
         context['registration_form'] = form
-    return render(request, 'account/register.html', context)
+        return render(request, 'tracker/base.html', context)
 
 
 def logout_view(request):
@@ -35,23 +38,21 @@ def login_view(request):
     context = {}
 
     user = request.user
-
     if user.is_authenticated:
         return redirect('index')
 
-    if request.POST:
-        form = UserAuthenticationForm(request.POST)
-        if form.is_valid():
-            email = request.POST['email']
-            password = request.POST['password']
-            user = authenticate(email=email, password=password)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        # form = UserAuthenticationForm(request.POST)
+        print(request)
+        email = data['email']
+        password = data['password']
+        user = authenticate(request, email=email, password=password)
 
-            if user:
-                login(request, user)
-                return redirect('index')
+        if user:
+            login(request, user)
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=401, content=json.dumps({'message': 'Login failed'}))
 
-    else:
-        form = UserAuthenticationForm()
-
-    context['login_form'] = form
-    return render(request, 'account/login.html', context)
+    return HttpResponse(404)

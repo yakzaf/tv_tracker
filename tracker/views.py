@@ -6,7 +6,7 @@ from tracker.shows_db.show_lookup import TvShows
 from django.db.models import Q
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from tracker.forms import SearchForm
-# import json
+import json
 
 
 # Create your views here.
@@ -24,14 +24,10 @@ def search_results(request):
     term = request.GET.get('q').strip()
     vector = SearchVector('show_name')
     query = SearchQuery(term)
-    print(query)
-    print(vector)
-    if not query:
+    if query.value:
         shows = Show.objects.annotate(rank=SearchRank(vector, query)).filter(Q(show_name__icontains=term)).order_by('-rank')
     else:
         shows = Show.objects.none()
-    print(shows)
-    print(request.user.username)
     if not shows.exists():
         shows_lookup = TvShows(term)
         results = shows_lookup.db_save()
@@ -48,14 +44,13 @@ def search_results(request):
                  "service": show.service})
 
     context = {'results': results}
-    # context = {}
-    # context['results_json'] = json.dumps(results)
 
     return render(request, template, context)
 
 
 def change_show_list(request, pk):
-    term = request.POST.get('alter_show_list')
+    data = json.loads(request.body.decode('utf-8'))
+    term = data['alter_show_list']
     show = Show.objects.get(pk=pk)
     if term == 'add':
         request.user.shows.add(show)
