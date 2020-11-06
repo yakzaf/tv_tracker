@@ -39,3 +39,14 @@ h4#login-title {
 .hide, .hidden {
   display: none;
 }
+
+.responsive {
+  max-width: 100%;
+  max-height: 10%;
+  /*height: auto;*/
+  /*height: auto;*/
+}
+.card-img {
+  max-height: 122.5px;
+  width: auto;
+}
