@@ -1,15 +1,21 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
+from django.views import View
+from django.contrib.auth import authenticate, login
 from user_auth.forms import RegistrationForm
 import json
 
 
 # Create your views here.
-def register_view(request):
-    context = {}
+class Register(View):
+    # context = {}
+    def get(self, request):
+        form = RegistrationForm()
+        context = {"registration_form": form}
+        # context['registration_form'] = form
+        return render(request, 'tracker/base.html', context)
 
-    if request.method == 'POST':
+    def post(self, request):
         data = json.loads(request.body.decode('utf-8'))
         form = RegistrationForm(data)
         if form.is_valid():
@@ -22,27 +28,11 @@ def register_view(request):
             return response
         else:
             return HttpResponse(404)
-    else:
-        form = RegistrationForm()
-        context['registration_form'] = form
-        return render(request, 'tracker/base.html', context)
 
 
-def logout_view(request):
-    logout(request)
-    return redirect('index')
-
-
-def login_view(request):
-
-    user = request.user
-    if user.is_authenticated:
-        return redirect('index')
-
-    if request.method == 'POST':
+class Login(View):
+    def post(self, request):
         data = json.loads(request.body.decode('utf-8'))
-        # form = UserAuthenticationForm(request.POST)
-        print(request)
         email = data['email']
         password = data['password']
         remember = data['remember']
@@ -55,5 +45,3 @@ def login_view(request):
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=401, content=json.dumps({'message': 'Login failed'}))
-
-    return HttpResponse(404)

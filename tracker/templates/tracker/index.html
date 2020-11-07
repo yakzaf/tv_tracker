@@ -5,9 +5,9 @@
     <div class="content">
         <div class="title"><h1 class="text-center">TV Tracker</h1></div>
         <br/>
-        <form id="search" method="GET" action="{% url 'search_results' %}" >
+        <form id="search" method="GET" action="{% url "search_results" %}" >
             <div class="input-group search-field">
-                {{ search_form }}
+                {{ form }}
                 <div class="input-group-btn">
                     <button class="btn btn-success" type="submit">Search</button>
                 </div>
