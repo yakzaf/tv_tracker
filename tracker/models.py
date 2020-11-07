@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-from django.utils import timezone
-# from user_auth.models import User
 
 
 # Create your models here.

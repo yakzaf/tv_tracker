@@ -25,11 +25,9 @@ window.onload = function() {
                     errorMessage.innerHTML = "Login failed";
                     document.querySelector("#login-modal-header").appendChild(errorMessage)
                 }
-                console.log(error.response.data.message);
-                console.log('test');
+
             }
         });
-        console.log(email);
         e.preventDefault();
         return false;
     });
@@ -48,7 +46,7 @@ window.onload = function() {
 
         const headers = {
             "X-CSRFToken": document.querySelector("input[name=csrfmiddlewaretoken]").value,
-            "Content-Type": 'application/json'
+            "Content-Type": "application/json"
         };
         let data = {
             email: email,
@@ -67,12 +65,9 @@ window.onload = function() {
                     let errorMessage = document.createElement("p");
                     errorMessage.style = "background-color: Tomato";
                     errorMessage.innerHTML = "Login failed";
-                    // <p style="background-color: Tomato">Login failed</p>
-                    // console.log(errorMessage)
                     document.querySelector("#login-modal-header").appendChild(errorMessage)
                 }
-                console.log(error.response.data.message);
-                console.log('test');
+
             }
         });
         e.preventDefault();

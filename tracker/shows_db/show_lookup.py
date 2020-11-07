@@ -2,8 +2,6 @@ import requests
 from decouple import config
 from tracker.models import Show
 from django.conf import settings
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db.models import Q
 
 
 def image_save(show_name, pic_url):
@@ -13,14 +11,14 @@ def image_save(show_name, pic_url):
         request = requests.get(pic_url, stream=True)
     except requests.HTTPError:
         return
-    path = settings.MEDIA_ROOT + f'{show_name}.png'
+    path = settings.MEDIA_ROOT + f"{show_name}.png"
     print(path)
-    with open(path, 'wb') as f:
+    with open(path, "wb") as f:
         for block in request.iter_content(1024 * 1024 * 10):
             if not block:
                 break
             f.write(block)
-    return f'{show_name}.png'
+    return f"{show_name}.png"
 
 
 class TvShows:
@@ -30,19 +28,19 @@ class TvShows:
     def db_save(self):
         omdb_url = "http://www.omdbapi.com/"
         utelly_url = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup"
-        params = {'term': self.term.replace(' ', '-').lower()}
-        headers = {
-            'x-rapidapi-host': "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com",
-            'x-rapidapi-key': config('UTELLY_API_KEY')
+        utelly_params = {"term": self.term.replace(" ", "-").lower()}
+        utelly_headers = {
+            "x-rapidapi-host": "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com",
+            "x-rapidapi-key": config("UTELLY_API_KEY")
         }
 
         try:
-            r = requests.get(utelly_url, headers=headers, params=params)
+            r = requests.get(utelly_url, headers=utelly_headers, params=utelly_params)
             r.raise_for_status()
-        except requests.exceptions.HTTPError as err:
+        except requests.exceptions.RequestException as err:
             raise SystemExit(err)
         utelly_r_json = r.json()
-        print(f'length = {len(utelly_r_json["results"])}')
+        print(f"length = {len(utelly_r_json['results'])}")
 
         if len(utelly_r_json["results"]) == 0:
             return
@@ -50,17 +48,19 @@ class TvShows:
         item_list = []
         for result in utelly_r_json["results"]:
             show_name = result["name"]
-            params = {'t': show_name, 'plot': 'short', 'apikey': config('OMDB_API_KEY')}
+            omdb_params = {"t": show_name, "plot": "short", "apikey": config("OMDB_API_KEY")}
             try:
-                r = requests.get(omdb_url, params=params)
+                r = requests.get(omdb_url, params=omdb_params)
                 r.raise_for_status()
-            except requests.exceptions.HTTPError as err:
+            except requests.exceptions.RequestException as err:
                 raise SystemExit(err)
             omdb_r_json = r.json()
-            print(omdb_r_json)
-            year = omdb_r_json["Year"]
-            overview = omdb_r_json["Plot"]
-            kind = omdb_r_json["Type"].capitalize()
+            if omdb_r_json["Response"] == "False":
+                year, overview, kind = "N/A"
+            else:
+                year = omdb_r_json["Year"]
+                overview = omdb_r_json["Plot"]
+                kind = omdb_r_json["Type"].capitalize()
             shows = Show.objects.filter(show_name__exact=show_name)
             if shows.exists():
                 results.append(
@@ -69,7 +69,7 @@ class TvShows:
                 continue
             request_services = result["locations"]
             pic = result["picture"]
-            picture_path = f'/media/{image_save(show_name, pic)}'
+            picture_path = f"/media/{image_save(show_name, pic)}"
             services = []
             for s in request_services:
                 services.append(s["display_name"])
