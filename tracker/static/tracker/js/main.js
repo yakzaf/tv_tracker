@@ -4,13 +4,15 @@ window.onload = function() {
         let formAction = e.target.form.action;
         let email = document.querySelector("#email").value;
         let password = document.querySelector("#password").value;
+        let remember = document.querySelector("#remember").checked;
         const headers = {
             "X-CSRFToken": document.querySelector("input[name=csrfmiddlewaretoken]").value,
             "Content-Type": "application/json"
         };
         let data = {
             email: email,
-            password: password
+            password: password,
+            remember: remember
         };
         axios.post(formAction, data, {headers: headers}).then((response) => {
             location.reload();
@@ -21,8 +23,6 @@ window.onload = function() {
                     let errorMessage = document.createElement("p");
                     errorMessage.style = "background-color: Tomato";
                     errorMessage.innerHTML = "Login failed";
-                    // <p style="background-color: Tomato">Login failed</p>
-                    // console.log(errorMessage)
                     document.querySelector("#login-modal-header").appendChild(errorMessage)
                 }
                 console.log(error.response.data.message);

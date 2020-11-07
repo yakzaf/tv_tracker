@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from user_auth.forms import RegistrationForm
 import json
@@ -35,7 +34,6 @@ def logout_view(request):
 
 
 def login_view(request):
-    context = {}
 
     user = request.user
     if user.is_authenticated:
@@ -47,10 +45,13 @@ def login_view(request):
         print(request)
         email = data['email']
         password = data['password']
+        remember = data['remember']
         user = authenticate(request, email=email, password=password)
 
         if user:
             login(request, user)
+            if remember:
+                request.session.set_expiry(2.628e+6)
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=401, content=json.dumps({'message': 'Login failed'}))
