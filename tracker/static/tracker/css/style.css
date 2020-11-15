@@ -7,7 +7,7 @@ td {
 }
 
 .centered-box {
-  display:flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   margin: auto;
@@ -16,7 +16,7 @@ td {
 
 .content {
   width: 100%;
-  margin-top: -20rem;
+  margin-top: -10rem;
 }
 
 #search {
@@ -24,8 +24,23 @@ td {
   max-width: 600px;
 }
 
-.nav {
-  height: 5rem;
+#app {
+  margin-top: calc(56px + .5rem);
+}
+
+.navbar {
+  border: 1px solid rgba(0,0,0,.125);
+  padding-right: 1rem;
+  padding-left: 1rem;
+  background-color: #FFFEFF;
+}
+
+body {
+  background-color: #F5FFFE;
+}
+
+.card {
+  background-color: #FFFFFE;
 }
 
 p#temp {
@@ -43,10 +58,19 @@ h4#login-title {
 .responsive {
   max-width: 100%;
   max-height: 10%;
-  /*height: auto;*/
-  /*height: auto;*/
 }
+
 .card-img {
   max-height: 122.5px;
   width: auto;
+}
+
+.service-icon {
+  max-width: 4rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+#search-btn:hover #search-icon {
+  filter: grayscale(100%);
 }
