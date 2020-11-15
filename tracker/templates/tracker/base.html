@@ -5,7 +5,7 @@
 	<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tv Tracker</title>
+    <title>Watch&Track</title>
 
     <script src="https://cdn.jsdelivr.net/npm/axios@0.20.0/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
@@ -16,85 +16,125 @@
     <script src="{% static 'tracker/js/main.js' %}"></script>
 	</head>
     <body>
-      <div class="nav">
+      <nav class="navbar fixed-top navbar-expand-md navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'index' %}">Watch&Track</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <a href="{% url 'index' %}">Home</a> |
-        <a href="{% url 'logout' %}" class="{% if request.user.is_authenticated is False%}hidden{% endif %}">Logout</a> |
-        <a href="{% url 'watchlist' %}" class="{% if request.user.is_authenticated is False%}hidden{% endif %}">Watchlist</a>
-        <p id="temp" class="{% if request.user.is_authenticated is False %}hidden{% endif %}">Hello, {{ request.user.username }}</p>
-        <a href="#regModal" class="trigger-btn {% if request.user.is_authenticated %}hidden{% endif %}" data-toggle="modal">Register</a>
-        <div id="regModal" class="modal fade">
-          <div class="modal-dialog modal-register">
-            <div class="modal-content">
-              <form action="{% url 'register' %}" method="post"> {% csrf_token %}
-                <div id="reg-modal-header" class="modal-header">
-                  <h4 id="reg-title" class="modal-title">Register</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" id="reg-email" autofocus="" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" class="form-control" id="reg-username" required>
-                  </div>
-                  <div class="form-group">
-                    <div class="clearfix">
-                      <label>Password</label>
-                    </div>
-                    <input type="password" name="password1" class="form-control" id="reg-password1" required>
-                  </div>
-                  <div class="form-group">
-                    <div class="clearfix">
-                      <label>Password confirmation</label>
-                    </div>
-                    <input type="password" name="password2" class="form-control" id="reg-password2" required>
-                  </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                  <input id="reg-btn" type="submit" class="btn btn-primary" value="Register">
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>|
-        <a href="#loginModal" class="trigger-btn {% if request.user.is_authenticated %} hidden {% endif %}" data-toggle="modal">Login</a>
-        <div id="loginModal" class="modal fade">
-          <div class="modal-dialog modal-login">
-            <div class="modal-content">
-              <form action="{% url 'login' %}" method="post"> {% csrf_token %}
-                <div id="login-modal-header" class="modal-header">
-                  <h4 id="login-title" class="modal-title">Login</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input id="email" type="text" name="email" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <div class="clearfix">
-                      <label>Password</label>
-{#                                                <a href="#" class="float-right text-muted"><small>Forgot?</small></a>#}
-                    </div>
-                    <input id="password" type="password" name="password" class="form-control" required>
-                  </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                  <label class="form-check-label"><input id="remember" type="checkbox" value="remember"> Remember me</label>
-                  <input id="login-btn" type="submit" class="btn btn-primary" value="Login">
-                </div>
-              </form>
-            </div>
-          </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item{% if request.user.is_authenticated is False %} hidden{% endif %}">
+              <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+            </li>
+            <li class="nav-item{% if request.user.is_authenticated is False %} hidden{% endif %}">
+              <a href="{% url 'watchlist' %}" class="nav-link">Watchlist</a>
+            </li>
+
+            <li class="nav-item{% if request.user.is_authenticated %} hidden{% endif %}">
+              <a href="#loginModal" class="trigger-btn nav-link" data-toggle="modal">Login</a>
+
+            </li>
+
+            <li class="nav-item{% if request.user.is_authenticated %} hidden{% endif %}">
+              <a href="#regModal" class="trigger-btn nav-link" data-toggle="modal">Register</a>
+            </li>
+          </ul>
+
+          <form class="form-inline my-2 my-lg-0" action="{% url 'search_results' %}">
+            <div class="input-group">
+            <input name="q" class="form-control" type="search" placeholder="Search" aria-label="Search">
+            <button id="search-btn" class="btn btn-outline-success my-2 my-sm-0" type="submit">
+              <svg id="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                <path d="M11.5 7a4.499 4.499 0 11-8.998 0A4.499 4.499 0 0111.5 7zm-.82 4.74a6 6 0 111.06-1.06l3.04 3.04a.75.75 0 11-1.06 1.06l-3.04-3.04z"
+                      fill="#198754"
+                      fill-rule="evenodd">
+                </path>
+              </svg>
+            </button>
+              </div>
+          </form>
+
         </div>
+      </nav>
 
+      <div id="app">
+          {% block content %}
+          {% endblock %}
       </div>
-        <div id="app">
-            {% block content %}
-            {% endblock %}
+
+      <div id="loginModal" class="modal fade">
+        <div class="modal-dialog modal-login">
+          <div class="modal-content">
+            <form action="{% url 'login' %}" method="post"> {% csrf_token %}
+              <div id="login-modal-header" class="modal-header">
+                <h4 id="login-title" class="modal-title">Login</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>
+              <div id="login-failed" class="alert alert-danger hidden">
+                Login failed.
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label>Email</label>
+                  <input id="email" type="text" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <div class="clearfix">
+                    <label>Password</label>
+{#                            <a href="#" class="float-right text-muted"><small>Forgot?</small></a>#}
+                  </div>
+                  <input id="password" type="password" name="password" class="form-control" required>
+                </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <label class="form-check-label"><input id="remember" type="checkbox" value="remember"> Remember me</label>
+                <input id="login-btn" type="submit" class="btn btn-primary" value="Login">
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
+
+      <div id="regModal" class="modal fade">
+        <div class="modal-dialog modal-register">
+          <div class="modal-content">
+            <form action="{% url 'register' %}" method="post"> {% csrf_token %}
+              <div id="reg-modal-header" class="modal-header">
+                <h4 id="reg-title" class="modal-title">Register</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>
+              <div id="reg-failed" class="alert alert-danger hidden">
+                Login failed.
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="reg-email">Email</label>
+                  <input type="email" name="email" class="form-control" id="reg-email" autofocus="" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-username">Username</label>
+                  <input type="text" name="username" class="form-control" id="reg-username" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-password1">Password</label>
+                  <input type="password" name="password1" class="form-control" id="reg-password1" required>
+                </div>
+                <div class="form-group">
+                  <div class="clearfix">
+                    <label for="reg-password2">Password confirmation</label>
+                  </div>
+                  <input type="password" name="password2" class="form-control" id="reg-password2" required>
+                </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <input id="reg-btn" type="submit" class="btn btn-primary" value="Register">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
     </body>
 </html>
