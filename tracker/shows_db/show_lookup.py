@@ -72,7 +72,7 @@ class TvShows:
             picture_path = f"/media/{image_save(show_name, pic)}"
             services = []
             for s in request_services:
-                services.append(s["display_name"])
+                services.append(s['display_name'])
 
             item = dict(show_name=show_name, picture_url=picture_path, year=year, kind=kind, overview=overview,
                         service=services)

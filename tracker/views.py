@@ -18,7 +18,6 @@ from django.views import View
 from django.views.generic import FormView, ListView
 
 
-# Create your views here.
 class ShowsList(APIView):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
@@ -45,6 +44,8 @@ class SearchResults(ListView):
 
     def get_queryset(self):
         term = self.request.GET.get("q").strip()
+        if not term:
+            return []
         vector = SearchVector("show_name")
         query = SearchQuery(term)
         shows = Show.objects.annotate(rank=SearchRank(vector, query)).filter(Q(show_name__icontains=term)).order_by(
@@ -60,6 +61,7 @@ class SearchResults(ListView):
                     added = bool(show.users.get(id=self.request.user.id))
                 except User.DoesNotExist:
                     pass
+                show.service = [f"tracker/icons/{i}.svg" for i in show.service]
                 results.append(
                     dict(added=added, show_id=show.show_id, show_name=show.show_name, picture_url=show.picture_url,
                          service=show.service, kind=show.kind, overview=show.overview, year=show.year))
@@ -90,6 +92,7 @@ class Watchlist(ListView):
         user_watchlist = Show.objects.filter(users__in=[self.request.user.id]).order_by("-user_shows__date_added")
         data = []
         for show in user_watchlist:
+            show.service = [f"tracker/icons/{i}.svg" for i in show.service]
             data.append(dict(added=True, show_id=show.show_id, show_name=show.show_name, picture_url=show.picture_url,
                              service=show.service, kind=show.kind, overview=show.overview, year=show.year))
 
