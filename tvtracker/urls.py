@@ -22,7 +22,7 @@ from tracker.views import ShowsList
 urlpatterns = [
     path("", include("tracker.urls")),
     path("admin/", admin.site.urls),
-    path("api/search", ShowsList.as_view()),
+    path("api/search", ShowsList.as_view(), name="api-search"),
 ]
 
 if settings.DEBUG:
