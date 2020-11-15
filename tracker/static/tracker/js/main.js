@@ -16,14 +16,11 @@ window.onload = function() {
         };
         axios.post(formAction, data, {headers: headers}).then((response) => {
             location.reload();
-            console.log(response);
         }, (error) => {
             if (error.response) {
                 if (error.response.data.message === "Login failed") {
-                    let errorMessage = document.createElement("p");
-                    errorMessage.style = "background-color: Tomato";
-                    errorMessage.innerHTML = "Login failed";
-                    document.querySelector("#login-modal-header").appendChild(errorMessage)
+                    let errorMessage = document.querySelector("#login-failed");
+                    errorMessage.classList.remove("hidden")
                 }
 
             }
@@ -39,10 +36,6 @@ window.onload = function() {
         let username = document.querySelector("#reg-username").value;
         let password1 = document.querySelector("#reg-password1").value;
         let password2 = document.querySelector("#reg-password2").value;
-        console.log(email);
-        console.log(username);
-        console.log(password1);
-        console.log(password2);
 
         const headers = {
             "X-CSRFToken": document.querySelector("input[name=csrfmiddlewaretoken]").value,
@@ -61,11 +54,9 @@ window.onload = function() {
             }
         }, (error) => {
             if (error.response) {
-                if (error.response.data.message === "Login failed") {
-                    let errorMessage = document.createElement("p");
-                    errorMessage.style = "background-color: Tomato";
-                    errorMessage.innerHTML = "Login failed";
-                    document.querySelector("#login-modal-header").appendChild(errorMessage)
+                if (error.response.data.message === "Registration failed") {
+                    let errorMessage = document.querySelector("#reg-failed");
+                    errorMessage.classList.remove("hidden")
                 }
 
             }
@@ -73,6 +64,7 @@ window.onload = function() {
         e.preventDefault();
         return false;
     });
+
 
     let showsTable = document.querySelector("#shows_table");
     if (showsTable) {

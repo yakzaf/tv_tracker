@@ -11,7 +11,7 @@ class Register(View):
     # context = {}
     def get(self, request):
         form = RegistrationForm()
-        context = {"registration_form": form}
+        context = {'registration_form': form}
         # context['registration_form'] = form
         return render(request, 'tracker/base.html', context)
 
@@ -27,7 +27,8 @@ class Register(View):
             response = HttpResponse(content="registration-success", status=200)
             return response
         else:
-            return HttpResponse(404)
+            response = HttpResponse(status=401, content=json.dumps({'message': 'Registration failed'}))
+            return response
 
 
 class Login(View):
