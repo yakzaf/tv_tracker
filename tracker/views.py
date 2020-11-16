@@ -53,6 +53,8 @@ class SearchResults(ListView):
         if not shows.exists():
             shows_lookup = TvShows(term)
             results = shows_lookup.db_save()
+            for result in results:
+                result["service"] = [f"tracker/icons/{i}.svg" for i in result["service"]]
         else:
             results = []
             for show in shows:
