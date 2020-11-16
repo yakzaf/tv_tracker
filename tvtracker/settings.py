@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+import dj_database_url
 from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -49,6 +50,7 @@ INTERNAL_IPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,13 +63,13 @@ MIDDLEWARE = [
 # Set session validity period to one day
 SESSION_COOKIE_AGE = 24 * 60 * 60
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = True
-SECURE_REFERRER_POLICY = "same-origin"
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SECURE_SSL_REDIRECT = False
+# SECURE_REFERRER_POLICY = "same-origin"
 
 ROOT_URLCONF = 'tvtracker.urls'
 
@@ -95,14 +97,9 @@ WSGI_APPLICATION = 'tvtracker.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': '',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
 
 # Password validation
@@ -147,15 +144,21 @@ REST_FRAMEWORK = {
     }
 }
 
+# PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATIC_URL = '/static/'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_REDIRECT_URL = '/'
 
 STATICFILES_DIRS = [
-    # os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),
     # os.path.join(BASE_DIR, 'tracker/static'),
 ]
 
