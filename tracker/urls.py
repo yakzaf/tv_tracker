@@ -10,5 +10,6 @@ urlpatterns = [
     path("register", Register.as_view(), name="register"),
     path("logout/", LogoutView.as_view(next_page="index"), name="logout"),
     path("login/", Login.as_view(), name="login"),
-    path("watchlist", views.Watchlist.as_view(), name="watchlist")
+    path("watchlist", views.Watchlist.as_view(), name="watchlist"),
+    path("credits", views.Credits.as_view(), name="credits")
 ]

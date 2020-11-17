@@ -39,6 +39,10 @@
             <li class="nav-item{% if request.user.is_authenticated %} hidden{% endif %}">
               <a href="#regModal" class="trigger-btn nav-link" data-toggle="modal">Register</a>
             </li>
+
+            <li class="nav-item">
+              <a href="{% url 'credits' %}" class="nav-link">About/Credits</a>
+            </li>
           </ul>
 
           <form class="form-inline my-2 my-lg-0" action="{% url 'search_results' %}">
@@ -56,6 +60,7 @@
           </form>
 
         </div>
+
       </nav>
 
       <div id="app">

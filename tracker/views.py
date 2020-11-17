@@ -3,6 +3,7 @@ import json
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import Q
 from django.http import HttpResponse
+from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -99,3 +100,9 @@ class Watchlist(ListView):
                              service=show.service, kind=show.kind, overview=show.overview, year=show.year))
 
         return data
+
+
+class Credits(View):
+
+    def get(self, request):
+        return render(request=request, template_name="tracker/credits.html")
